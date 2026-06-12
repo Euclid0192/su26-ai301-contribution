@@ -1,20 +1,20 @@
-# Contribution 1: Replace outdated classes `Layout-sidebar`
+# Contribution 1: Add support for UTF8SMTP email format
 
 **Contribution Number:** 1
 
 **Student:** Nam Nguyen 
 
-**Issue:** https://github.com/refined-github/refined-github/issues/9589
+**Issue:** https://github.com/homarr-labs/homarr/issues/3764
 
-**Status:** Phase I (complete)
+**Status:** Phase II (in progress)
 
 ---
 
 ## Why I Chose This Issue
 
-I chose issue #9589 "Replace outdated classes `Layout-sidebar`" because it aligns with my use of GitHub. As someone who spends significant time on GitHub, I've often thought about features I'd love to see implemented. Contributing to Refined GitHub not only helps me learn how to contribute to open source, but also allows me to build something I'd use myself.
+I chose issue #3764 "Add support for UTF8SMTP email format" because I think this project is so cool. The UI is very attractive, and I feel like this is something I'd definitely give a try and use in my everyday life. Also, the issue has tags "enhancement" and "good first issue", making it a manageable first contribution.
 
-This issue is particularly appealing because it has "help wanted" and "small" labels, making it a manageable first contribution that won't be too complex for a beginner. Additionally, I'm excited to dive into how browser extensions are built. This is an area I've been curious about and this issue provides the perfect entry point. From reading the thread, I understand that there's an outdated CSS component that needs to be replaced throughout the codebase. My contribution will improve readability and maintainability for other developers working on the project. I've already left a comment on the issue introducing myself and my desire to work on it.
+Homarr is a modern dashboard for organizing self-hosted services, and being able to support international characters (like Umlaute: ä, ö, ü) in email addresses is important for users worldwide. This issue provides a perfect entry point into the codebase - it's focused on updating an email validation regex to support UTF8SMTP format. My contribution will improve the user experience for international users who have special characters in their email addresses.
 
 ---
 
@@ -22,19 +22,20 @@ This issue is particularly appealing because it has "help wanted" and "small" la
 
 ### Problem Description
 
-[In your own words, what's broken or missing?]
+Currently, Homarr's email validation does not support UTF8SMTP email format, which means email addresses containing international characters (Umlaute like ä, ö, ü) are rejected as invalid. This prevents users with such characters in their email addresses from using the application properly.
 
 ### Expected Behavior
 
-[What should happen?]
+Email addresses containing international characters (e.g., `user@münchen.de`, `jörg@example.com`) should be accepted as valid email addresses when the UTF8SMTP format is supported.
 
 ### Current Behavior
 
-[What actually happens?]
+The current email validator rejects emails with non-ASCII characters, causing validation errors for users with internationalized email addresses.
 
 ### Affected Components
 
-[Which parts of the codebase are involved?]
+- Email validation logic (likely in authentication or user management modules)
+- The regex pattern used for email validation
 
 ---
 
@@ -46,9 +47,9 @@ This issue is particularly appealing because it has "help wanted" and "small" la
 
 ### Steps to Reproduce
 
-1. [Step 1]
-2. [Step 2]
-3. [Observed result]
+1. [Step 1 - Navigate to user registration/login]
+2. [Step 2 - Enter an email with Umlaute characters, e.g., `test@münchen.de`]
+3. [Observed result - Email is rejected as invalid]
 
 ### Reproduction Evidence
 
@@ -157,7 +158,6 @@ Using UMPIRE framework (adapted):
 ---
 
 ## Resources Used
-
+- [Zod PR #3678 - Reference regex implementation for UTF8 email validation](https://github.com/colinhacks/zod/pull/3678/files#diff-52632a4861fc9d7dc2dacef13cd91d60286dd706c1bb57438b8ee6a579a8796aR605) - Contains the regex pattern referenced in the issue
 - [Link to helpful documentation]
 - [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
