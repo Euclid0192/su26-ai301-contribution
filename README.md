@@ -43,19 +43,25 @@ The current email validator rejects emails with non-ASCII characters, causing va
 
 ### Environment Setup
 
-[Notes on setting up your local development environment - challenges you faced, how you solved them]
+Setting up the Homarr development environment presented several challenges:
+
+1. **Package Manager Mismatch**: The project uses pnpm while I was using npm. I needed to install pnpm to ensure compatibility with the project's dependency management.
+
+2. **Node Version Difference**: The project requires Node.js v24 while I was running v22. I had to upgrade my Node.js version to match the project's requirements.
+
+3. **Redis on Windows**: The project requires redis-server, but the `redis-server` command doesn't work natively on Windows. I needed to find an alternative way to run Redis (likely using WSL, Docker, or a Windows-compatible Redis distribution).
 
 ### Steps to Reproduce
 
-1. [Step 1 - Navigate to user registration/login]
-2. [Step 2 - Enter an email with Umlaute characters, e.g., `test@münchen.de`]
-3. [Observed result - Email is rejected as invalid]
+1. Click on the **Account** icon in the navigation
+2. Navigate to **User** → **Manage user**
+3. Click **Edit current account**
+4. Type in an email with international characters (e.g., `jörg@example.com` or `user@münchen.de`)
 
 ### Reproduction Evidence
 
-- **Commit showing reproduction:** [Link to commit in your fork]
-- **Screenshots/logs:** [If applicable]
-- **My findings:** [What you discovered during reproduction]
+- **Screenshots/logs:** [Screenshots to be uploaded later]
+- **My findings:** The issue is permanent (not transient) as I can reproduce it multiple times. As long as there's an international character (like ö) in the email address, the UI renders an "email invalid" error immediately.
 
 ---
 
@@ -63,24 +69,34 @@ The current email validator rejects emails with non-ASCII characters, causing va
 
 ### Analysis
 
-[Your analysis of the root cause - what's causing the issue?]
+The root cause of this issue is that Homarr uses Zod for email validation, and Zod's default email validation regex does not support international characters (UTF8SMTP format). Zod's current regex only matches ASCII characters in email addresses, causing any email containing characters like ä, ö, ü to be rejected as invalid.
+
 
 ### Proposed Solution
 
-[High-level description of your fix approach]
+Replace the existing Zod email validation regex with the UTF8SMTP-compatible regex from Zod PR #3678. This regex properly handles international characters (Umlaute and other non-ASCII characters) in email addresses while maintaining backward compatibility with standard ASCII emails.
 
 ### Implementation Plan
 
 Using UMPIRE framework (adapted):
 
-**Understand:** [Restate the problem]
+**Understand:** 
+- The current Zod email validator rejects emails containing international characters (ä, ö, ü, etc.)
+- Need to update the validation regex to support UTF8SMTP email format
+- Reference implementation available from Zod PR #3678 with the updated regex pattern
 
-**Match:** [What similar patterns/solutions exist in the codebase?]
+**Match:** 
+- Find where Zod email validation schemas are defined in the Homarr codebase
+- Look for imports of `z.email()` or similar email validation patterns
+- Check if there are custom email validation utilities
 
-**Plan:** [Step-by-step implementation plan]
-1. [Modify file X to do Y]
-2. [Add function Z]
-3. [Update tests]
+**Plan:** 
+1. Locate the Zod email validation schemas in the codebase (likely in auth/user management modules)
+2. Identify the current regex pattern or `z.email()` usage
+3. Replace it with the UTF8SMTP-compatible regex from Zod PR #3678
+4. Test with various email addresses containing Umlaute characters (e.g., `jörg@example.com`, `user@münchen.de`)
+5. Ensure existing valid ASCII emails still pass validation
+6. Verify the UI no longer shows "email invalid" error for internationalized emails
 
 **Implement:** [Link to your branch/commits as you work]
 
