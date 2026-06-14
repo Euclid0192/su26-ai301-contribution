@@ -102,11 +102,21 @@ Using UMPIRE framework (adapted):
 5. Ensure existing valid ASCII emails still pass validation
 6. Verify the UI no longer shows "email invalid" error for internationalized emails
 
-**Implement:** [Link to your branch/commits as you work]
+**Implement:** https://github.com/Euclid0192/homarr/tree/nam/add-email-utf8smtp-format
 
-**Review:** [Self-review checklist - does it follow the project's contribution guidelines?]
+**Review:** 
+- [ ] Follows Homarr coding standards and conventions
+- [ ] The regex change is minimal and targeted
+- [ ] Backward compatible - existing ASCII emails still validate
+- [ ] No breaking changes to the API
+- [ ] Code is properly documented
+- [ ] Tests cover both internationalized and standard email formats
 
-**Evaluate:** [How will you verify it works?]
+**Evaluate:** 
+- Manual testing: Verify that emails with Umlaute (ä, ö, ü) no longer show "email invalid" error in the UI
+- Manual testing: Verify that standard ASCII emails still validate correctly
+- Unit tests: Ensure all email validation test cases pass
+- Regression testing: Confirm no other validation logic is affected
 
 ---
 
