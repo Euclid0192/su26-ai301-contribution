@@ -60,7 +60,9 @@ Setting up the Homarr development environment presented several challenges:
 
 ### Reproduction Evidence
 
-- **Screenshots/logs:** [Screenshots to be uploaded later]
+- **Screenshots/logs:**
+<img width="2095" height="1450" alt="Screenshot 2026-06-14 115433" src="https://github.com/user-attachments/assets/3ee5d081-4eb2-4fa0-8589-7a810dcf929c" />
+
 - **My findings:** The issue is permanent (not transient) as I can reproduce it multiple times. As long as there's an international character (like ö) in the email address, the UI renders an "email invalid" error immediately.
 
 ---
