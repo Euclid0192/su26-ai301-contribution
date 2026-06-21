@@ -4,9 +4,9 @@
 
 **Student:** Nam Nguyen 
 
-**Issue:** https://github.com/homarr-labs/homarr/issues/3764
+**Issue:** [https://github.com/homarr-labs/homarr/issues/3764](https://github.com/homarr-labs/homarr/issues/3764)
 
-**Status:** Phase II (complete)
+**Status:** Phase III (in progress)
 
 ---
 
@@ -124,36 +124,60 @@ Using UMPIRE framework (adapted):
 
 ### Unit Tests
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+- [x] Test case 1: Validate UTF8SMTP email with umlauts in local part (`jörg@example.com`)
+- [x] Test case 2: Validate UTF8SMTP email with unicode domain (`user@münchen.de`)
+- [x] Test case 3: Verify standard ASCII emails still pass (`user@example.com`)
 
 ### Integration Tests
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+- [x] Integration scenario 1: Validation package tests (294 tests passing)
+- [x] Integration scenario 2: Auth package tests (1,911 tests passing)
 
 ### Manual Testing
 
-[What you tested manually and results]
+Pending - Requires dev server restart to pick up monorepo package changes. Tests to perform:
+
+- Create user with `jörg@example.com` (umlaut in local part)
+- Edit profile with `user@münchen.de` (umlaut in domain)
+- Verify standard ASCII emails still work
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Week 3 Progress
 
-[What you built this week, challenges faced, decisions made]
+Created centralized UTF8SMTP email validation for Homarr to support international characters (ä, ö, ü) in email addresses. Zod v4's default email validation uses an ASCII-only regex that rejects these characters.
 
-### Week [Y] Progress
+**Approach:**
+
+- Created new `packages/validation/src/email.ts` a reusable email validation exporting three schemas:
+  - `utf8EmailSchema` - Base UTF8SMTP validation using `z.regexes.unicodeEmail`
+  - `optionalEmailSchema` - For user creation (empty string stays empty)
+  - `nullableEmailSchema` - For profile editing (empty → null)
+- Updated all email validation occurrences across the codebase to use the new schemas
+- Added 3 unit tests for UTF8SMTP email validation
+
+### Week [Y] progress
 
 [Continue documenting as you work]
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:** 6 files (1 new, 5 updated)
+
+1. `packages/validation/src/email.ts` (new file)
+2. `packages/validation/src/user.ts`: uses `optionalEmailSchema` and `nullableEmailSchema`
+3. `packages/validation/src/form/i18n.spec.ts`: added 3 UTF8SMTP test cases
+4. `packages/auth/providers/credentials/authorization/ldap-authorization.ts`: uses `utf8EmailSchema`
+5. `packages/old-import/src/user-schema.ts`: uses `nullableEmailSchema`
+6. `apps/nextjs/src/app/[locale]/manage/users/create/_components/create-user-stepper.tsx`: uses `optionalEmailSchema`
+
+- **Key commits**:
+1. [Adding UTF8 email format validation](https://github.com/Euclid0192/homarr/commit/2f87d3a06e3d2d2f21c7f526e9464bb7ac940dbd)
+
+- **Tests passing:** 2,205 total (294 validation + 1,911 auth)
+- **Approach decisions:** Created dedicated `email.ts` module to centralize email validation logic, avoiding duplication of the UTF8SMTP regex pattern. Exported two variations (optional vs nullable) to match existing codebase patterns for different use cases.
 
 ---
 
