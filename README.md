@@ -158,9 +158,20 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 - Updated all email validation occurrences across the codebase to use the new schemas
 - Added 3 unit tests for UTF8SMTP email validation
 
-### Week [Y] progress
+### Week 4 progress
 
-[Continue documenting as you work]
+**Current Status:** Debugging frontend validation issue - all backend tests pass but UI still rejects international characters.
+
+**Problem:**
+- All unit tests and integration tests pass (2,205 total tests)
+- However, typing international characters in the frontend (e.g., `jörg@example.com`) still yields "Invalid email" error before submitting the request
+- The validation error appears immediately in the UI, suggesting client-side validation is not using the updated schemas
+
+**Investigation Focus:**
+- Checking if frontend components are importing from the correct validation package
+- Verifying that the Next.js app is using `optionalEmailSchema` from `packages/validation`
+- Investigating potential caching issues with the monorepo build
+- Examining if there are duplicate validation schemas in the frontend code that bypass the centralized `email.ts` module
 
 ### Code Changes
 
