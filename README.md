@@ -6,7 +6,7 @@
 
 **Issue:** [https://github.com/homarr-labs/homarr/issues/3764](https://github.com/homarr-labs/homarr/issues/3764)
 
-**Status:** Phase III (in progress)
+**Status:** Phase IV (complete)
 
 ---
 
@@ -135,11 +135,11 @@ Using UMPIRE framework (adapted):
 
 ### Manual Testing
 
-Pending - Requires dev server restart to pick up monorepo package changes. Tests to perform:
+Completed (after running the app in dev mode so workspace package changes are picked up correctly):
 
-- Create user with `jörg@example.com` (umlaut in local part)
-- Edit profile with `user@münchen.de` (umlaut in domain)
-- Verify standard ASCII emails still work
+- [x] Create user with `jörg@example.com` (umlaut in local part) — accepted
+- [x] Edit profile with `user@münchen.de` (umlaut in domain) — accepted
+- [x] Verify standard ASCII emails still work (`user@example.com`) — accepted
 
 ---
 
@@ -160,18 +160,18 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 
 ### Week 4 progress
 
-**Current Status:** Debugging frontend validation issue - all backend tests pass but UI still rejects international characters.
+**Issue encountered:** All unit/integration tests passed, but the UI still showed an immediate “Invalid email” error when typing emails with international characters.
 
-**Problem:**
-- All unit tests and integration tests pass (2,205 total tests)
-- However, typing international characters in the frontend (e.g., `jörg@example.com`) still yields "Invalid email" error before submitting the request
-- The validation error appears immediately in the UI, suggesting client-side validation is not using the updated schemas
+**Root cause:** I was running the app using `pnpm build` + `pnpm start` (production build). This made it look like the frontend wasn’t using the updated workspace validation package during local testing.
 
-**Investigation Focus:**
-- Checking if frontend components are importing from the correct validation package
-- Verifying that the Next.js app is using `optionalEmailSchema` from `packages/validation`
-- Investigating potential caching issues with the monorepo build
-- Examining if there are duplicate validation schemas in the frontend code that bypass the centralized `email.ts` module
+**Fix:** Switched to `pnpm dev` (dev mode) and restarted the dev server. After that, the UI validation correctly accepted UTF8SMTP emails like `jörg@example.com` and `user@münchen.de`.
+
+### Week 5 progress
+
+**Wrap-up:**
+- Verified the UI accepts UTF8SMTP emails during typing (no premature “Invalid email” message)
+- Re-verified tests remain green (2,205 total tests: 294 validation + 1,911 auth)
+- Submitted PR for review
 
 ### Code Changes
 
@@ -186,6 +186,7 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 
 - **Key commits**:
 1. [Adding UTF8 email format validation](https://github.com/Euclid0192/homarr/commit/2f87d3a06e3d2d2f21c7f526e9464bb7ac940dbd)
+2. [Formatting cleanup](https://github.com/homarr-labs/homarr/commit/831fb2efa6d6335d2548de72e02763b6368bd4d2)
 
 - **Tests passing:** 2,205 total (294 validation + 1,911 auth)
 - **Approach decisions:** Created dedicated `email.ts` module to centralize email validation logic, avoiding duplication of the UTF8SMTP regex pattern. Exported two variations (optional vs nullable) to match existing codebase patterns for different use cases.
@@ -194,15 +195,14 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** [https://github.com/homarr-labs/homarr/pull/6239](https://github.com/homarr-labs/homarr/pull/6239)
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**PR Description:** fix: add utf8 email validation support
 
 **Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+- None yet
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+**Status:** Awaiting review
 
 ---
 
@@ -210,19 +210,23 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 
 ### Technical Skills Gained
 
-[What you learned technically]
+- Working in a pnpm monorepo (workspace packages and how changes propagate to apps)
+- Using Zod’s email validation with a custom Unicode-aware pattern (`z.regexes.unicodeEmail`)
+- Centralizing validation schemas to avoid duplicated regex logic across the codebase
+- Writing targeted tests for real-world edge cases (Unicode in local part and domain)
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+- The biggest confusion was “tests pass but UI still fails.” The resolution was realizing I was running a **production build** locally (`pnpm build` + `pnpm start`) instead of **dev mode** (`pnpm dev`), which made the UI appear out-of-date.
+- Initial Windows setup friction (Node version alignment, pnpm adoption, Redis setup) took time but became stable after following the project’s setup expectations.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+- Start manual UI validation earlier and confirm I’m running the correct mode (`pnpm dev`) before debugging “frontend vs tests” mismatches.
+- Keep a short “known-good runbook” of the exact commands used to run the app during development to avoid accidentally switching modes mid-debug.
 
 ---
 
 ## Resources Used
 - [Zod PR #3678 - Reference regex implementation for UTF8 email validation](https://github.com/colinhacks/zod/pull/3678/files#diff-52632a4861fc9d7dc2dacef13cd91d60286dd706c1bb57438b8ee6a579a8796aR605) - Contains the regex pattern referenced in the issue
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
+- Homarr issue #3764: [https://github.com/homarr-labs/homarr/issues/3764](https://github.com/homarr-labs/homarr/issues/3764)
