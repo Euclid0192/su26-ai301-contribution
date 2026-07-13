@@ -105,12 +105,12 @@ Using UMPIRE framework (adapted):
 **Implement:** https://github.com/Euclid0192/homarr/tree/nam/add-email-utf8smtp-format
 
 **Review:** 
-- [ ] Follows Homarr coding standards and conventions
-- [ ] The regex change is minimal and targeted
-- [ ] Backward compatible - existing ASCII emails still validate
-- [ ] No breaking changes to the API
-- [ ] Code is properly documented
-- [ ] Tests cover both internationalized and standard email formats
+- [x] Follows Homarr coding standards and conventions
+- [x] The regex change is minimal and targeted
+- [x] Backward compatible - existing ASCII emails still validate
+- [x] No breaking changes to the API
+- [x] Code is properly documented
+- [x] Tests cover both internationalized and standard email formats
 
 **Evaluate:** 
 - Manual testing: Verify that emails with Umlaute (ä, ö, ü) no longer show "email invalid" error in the UI
@@ -187,6 +187,7 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 - **Key commits**:
 1. [Adding UTF8 email format validation](https://github.com/Euclid0192/homarr/commit/2f87d3a06e3d2d2f21c7f526e9464bb7ac940dbd)
 2. [Formatting cleanup](https://github.com/homarr-labs/homarr/commit/831fb2efa6d6335d2548de72e02763b6368bd4d2)
+3. [coderabbit comment](https://github.com/homarr-labs/homarr/commit/1942afe333b0f3529e2d0deacdb5d327b05fbcaf)
 
 - **Tests passing:** 2,205 total (294 validation + 1,911 auth)
 - **Approach decisions:** Created dedicated `email.ts` module to centralize email validation logic, avoiding duplication of the UTF8SMTP regex pattern. Exported two variations (optional vs nullable) to match existing codebase patterns for different use cases.
@@ -200,9 +201,9 @@ Created centralized UTF8SMTP email validation for Homarr to support internationa
 **PR Description:** fix: add utf8 email validation support
 
 **Maintainer Feedback:**
-- None yet
+- One comment, but resolved by maintainer before I could start on it :D
 
-**Status:** Awaiting review
+**Status:** Merged
 
 ---
 
